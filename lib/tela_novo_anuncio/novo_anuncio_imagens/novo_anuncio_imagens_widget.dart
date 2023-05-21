@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -19,6 +23,12 @@ class NovoAnuncioImagensWidget extends StatefulWidget {
 
 class _NovoAnuncioImagensWidgetState extends State<NovoAnuncioImagensWidget> {
   late NovoAnuncioImagensModel _model;
+
+  ImagePicker imagePicker = ImagePicker();
+
+  XFile? imagemSelecionada;
+
+  List<XFile> _imageList = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _unfocusNode = FocusNode();
@@ -214,51 +224,76 @@ class _NovoAnuncioImagensWidgetState extends State<NovoAnuncioImagensWidget> {
                       ],
                     ),
                   ),
-                  Container(
-                    width: 100.0,
-                    height: 292.8,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                    ),
-                    child: FlutterFlowIconButton(
-                      borderColor: Colors.transparent,
-                      borderRadius: 30.0,
-                      borderWidth: 1.0,
-                      buttonSize: 60.0,
-                      icon: Icon(
-                        Icons.upload_rounded,
-                        color: FlutterFlowTheme.of(context).primaryText,
-                        size: 50.0,
+                  Align(
+                    alignment: AlignmentDirectional(-1, -1),
+                    child: ListTile(
+                      title: Text(
+                        'Enviar Foto',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).titleLarge,
                       ),
-                      onPressed: () {
-                        print('IconButton pressed ...');
-                      },
+                      leading: Icon(
+                        Icons.upload,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                      ),
+                      onTap: selecionarFoto,
+                      trailing: Icon(
+                        Icons.upload,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                      ),
+                      tileColor:
+                          FlutterFlowTheme.of(context).secondaryBackground,
+                      dense: false,
                     ),
                   ),
                   Container(
-                    width: 100.0,
+                    width: 100,
                     height: 233.3,
                     decoration: BoxDecoration(
                       color: Color(0x00FFFFFF),
-                      borderRadius: BorderRadius.circular(12.0),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: Color(0xFF047918),
-                        width: 2.0,
+                        width: 2,
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: Align(
-                            alignment: AlignmentDirectional(0.0, -0.8),
-                            child: Text(
-                              'Fotos enviadas:',
-                              style: FlutterFlowTheme.of(context).bodyMedium,
-                            ),
+                    child: Expanded(
+                      child: GridView.builder(
+                          padding: EdgeInsets.zero,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            //      mainAxisSpacing: 1,
+                            // childAspectRatio: 1,
                           ),
-                        ),
-                      ],
+                          itemCount: _imageList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Stack(
+                                children: [
+                                  Image.file(
+                                    File(_imageList[index].path),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Positioned(
+                                    right: 20,
+                                    child: Container(
+                                      color: Color.fromRGBO(255, 255, 244, 0.2),
+                                      child: IconButton(
+                                        onPressed: () {
+                                          _imageList.removeAt(index);
+                                          setState(() {});
+                                        },
+                                        icon: Icon(Icons.delete),
+                                        color: Colors.red[500],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                     ),
                   ),
                   Align(
@@ -300,5 +335,15 @@ class _NovoAnuncioImagensWidgetState extends State<NovoAnuncioImagensWidget> {
         ),
       ),
     );
+  }
+
+  selecionarFoto() async {
+    final XFile? imagemTemporaria =
+        // ignore: deprecated_member_use
+        await imagePicker.pickImage(source: ImageSource.gallery);
+    if (imagemTemporaria!.path.isNotEmpty) {
+      _imageList.add(imagemTemporaria);
+    }
+    setState(() {});
   }
 }

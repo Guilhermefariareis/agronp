@@ -1219,7 +1219,7 @@ class _NovoAnuncioWidgetState extends State<NovoAnuncioWidget> {
                             },
                             text: 'Confirmar',
                             options: FFButtonOptions(
-                              width: 300,
+                              width: 350,
                               height: 40,
                               padding:
                                   EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
